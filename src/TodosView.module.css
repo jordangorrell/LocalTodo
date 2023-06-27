@@ -1,0 +1,101 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    min-height: 50vh; /* Adjust as needed */
+    width: 50%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+}
+
+.todos {
+}
+
+.inputField {
+    font-family: 'Nunito Sans';
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #939393;
+    outline: none; /* Remove outline on focus */
+    padding-bottom: 5px;
+    width: 50%;
+    transition: width 0.125s ease-in-out, padding 0.125s ease-in-out,
+        border 0.125s ease-in-out;
+    color: #727272;
+    margin-bottom: 250px;
+}
+
+.inputFieldFirstTodo {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.inputField:focus {
+    border-bottom: 2px solid #727272; /* Add bottom border, adjust color and thickness as needed */
+}
+
+.todo {
+    display: flex;
+    align-items: flex-start;
+}
+
+.todo .checkbox {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.todoText {
+    /* padding: 1em 0; */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    margin-left: 10px;
+}
+
+.todoText:hover {
+    color: rgb(156, 156, 156);
+}
+
+.strikethrough {
+    text-decoration: line-through;
+    color: grey;
+}
+
+.editInput {
+    font-family: 'Nunito Sans';
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #939393;
+    outline: none; /* Remove outline on focus */
+    padding-bottom: 5px;
+    color: #727272;
+    margin-left: 10px;
+}
+
+.trashcan {
+    display: none;
+    opacity: 0;
+    margin-left: 10px;
+    transition: fill 0.25s ease-in-out;
+}
+
+.trashcan * {
+    transition: fill 0.2s ease-in-out;
+}
+
+.shownTrashcan {
+    display: block;
+    opacity: 0;
+    animation-name: trashcanShow;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+}
+
+@keyframes trashcanShow {
+    100% {
+        opacity: 1;
+    }
+}

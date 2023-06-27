@@ -1,0 +1,29 @@
+.buttonWrapper {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.buttonWrapper:focus-visible .trashcan {
+    filter: drop-shadow(0 0 5px rgb(0 0 0));
+}
+
+.trashcan {
+    height: 20px;
+    width: 20px;
+    transition: filter 0.2s ease-in-out;
+}
+
+.trashcan * {
+    stroke: rgb(255, 255, 255);
+}
+
+.piece {
+    fill: rgb(186, 113, 113);
+}
+
+.buttonWrapper:hover .trashcan .piece {
+    fill: red;
+}
