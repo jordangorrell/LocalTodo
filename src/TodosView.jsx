@@ -3,6 +3,7 @@ import * as todoStorage from './storage/todoStorageHandler'
 import styles from './TodosView.module.css'
 import Checkbox from './input/Checkbox';
 import Trashcan from './input/Trashcan';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 const TodosView = () => {
     const [todos, setTodos] = useState(
@@ -72,10 +73,6 @@ const TodosView = () => {
     function handleAddTodoInputKeyDown(event) {
         if (event.key === "Enter") { 
             addTodo();
-
-            // Bad idea?
-            // Seems nicer to be able to rattle off a bunch of todos without having to re-focus
-            // inputRef.current.blur();
         }
     }
 
@@ -123,27 +120,50 @@ const TodosView = () => {
         return todo.completed ? `${styles.trashcan} ${styles.shownTrashcan}` : styles.trashcan
     }
 
+    function handleOnDragEnd(result) {
+        if (!result.destination) {
+            return;
+        }
+
+        const todosCopy = Array.from(todos);
+        const [reorderedTodo] = todosCopy.splice(result.source.index, 1);
+        todosCopy.splice(result.destination.index, 0, reorderedTodo)
+
+        setTodos(todosCopy);
+    }
+
     return (
         <div>
             <div onClick={removeTodoTest} style={{cursor: 'pointer'}}>Reset</div>
-            <div className={styles.container}>
-                    {todos.map(todo => (
-                        <div key={todo.id} className={styles.todo}>
-                            <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
-                            {todoTextElement(todo)}
-                            {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId='todos'>
+                    {(provided) => (
+                        <div className={styles.container} {...provided.droppableProps} ref={provided.innerRef}>
+                                {todos.map((todo, index) => (
+                                    <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
+                                        {(provided) => (
+                                            <div className={styles.todo} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
+                                                {todoTextElement(todo)}
+                                                {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                <input 
+                                    className={inputClasses}
+                                    ref={inputRef}
+                                    placeholder={inputPlaceholder}
+                                    type='text' 
+                                    value={todoText} 
+                                    onChange={e => setTodoText(e.target.value)}
+                                    onKeyDown={handleAddTodoInputKeyDown}
+                                />
+                                {provided.placeholder}
                         </div>
-                    ))}
-                    <input 
-                        className={inputClasses}
-                        ref={inputRef}
-                        placeholder={inputPlaceholder}
-                        type='text' 
-                        value={todoText} 
-                        onChange={e => setTodoText(e.target.value)}
-                        onKeyDown={handleAddTodoInputKeyDown}
-                    />
-            </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
         </div>
     )
 }
