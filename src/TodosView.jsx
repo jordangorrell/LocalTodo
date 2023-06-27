@@ -3,7 +3,6 @@ import * as todoStorage from './storage/todoStorageHandler'
 import styles from './TodosView.module.css'
 import Checkbox from './input/Checkbox';
 import Trashcan from './input/Trashcan';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const TodosView = () => {
     const [todos, setTodos] = useState(
@@ -127,31 +126,24 @@ const TodosView = () => {
     return (
         <div>
             <div onClick={removeTodoTest} style={{cursor: 'pointer'}}>Reset</div>
-            <DragDropContext>
-                <Droppable>
-                    {(provided) => (
-                        
-                        <div className={styles.container}>
-                                {todos.map(todo => (
-                                    <div key={todo.id} className={styles.todo}>
-                                        <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
-                                        {todoTextElement(todo)}
-                                        {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
-                                    </div>
-                                ))}
-                                <input 
-                                    className={inputClasses}
-                                    ref={inputRef}
-                                    placeholder={inputPlaceholder}
-                                    type='text' 
-                                    value={todoText} 
-                                    onChange={e => setTodoText(e.target.value)}
-                                    onKeyDown={handleAddTodoInputKeyDown}
-                                />
+            <div className={styles.container}>
+                    {todos.map(todo => (
+                        <div key={todo.id} className={styles.todo}>
+                            <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
+                            {todoTextElement(todo)}
+                            {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
                         </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+                    ))}
+                    <input 
+                        className={inputClasses}
+                        ref={inputRef}
+                        placeholder={inputPlaceholder}
+                        type='text' 
+                        value={todoText} 
+                        onChange={e => setTodoText(e.target.value)}
+                        onKeyDown={handleAddTodoInputKeyDown}
+                    />
+            </div>
         </div>
     )
 }
