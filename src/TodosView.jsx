@@ -17,6 +17,8 @@ const TodosView = () => {
     const [inputPlaceholder, setInputPlaceholder] = useState("");
     const inputRef = useRef();
 
+    const [clearTodosToggled, setClearTodosToggled] = useState(false);
+
     useEffect(() => {
         todoStorage.setTodos(todos);
 
@@ -50,6 +52,10 @@ const TodosView = () => {
         )
     }
 
+    function doesAnyTodoExist() {
+        return todos.length > 0;
+    }
+
     function toggleCompleted(todoId) {
         setTodos(
             todos.map(todo => todo.id === todoId ? { ...todo, completed: !todo.completed } : todo)
@@ -81,9 +87,15 @@ const TodosView = () => {
     const inputClasses = isTodosEmpty() ? `${styles.inputField} ${styles.inputFieldFirstTodo}` : styles.inputField;
 
     function editTodo() {
-        setTodos(
-            todos.map(todo => todo.id === editingTodoId ? { ...todo, text: editingTodoText } : todo)
-        );
+        if (editingTodoText.trim() === '') {
+            removeTodo(editingTodoId)
+        }
+        else {
+            setTodos(
+                todos.map(todo => todo.id === editingTodoId ? { ...todo, text: editingTodoText } : todo)
+            );
+        }
+
         setEditingTodoId(null);
         setEditingTodoText("");
     }
@@ -95,7 +107,7 @@ const TodosView = () => {
     }
 
     function todoTextElement(todo) {
-        if (todo.id === editingTodoId) {
+        if (todo.id === editingTodoId && !todo.completed) {
             return <input 
                     type='text'
                     className={styles.editInput}
@@ -132,13 +144,19 @@ const TodosView = () => {
         setTodos(todosCopy);
     }
 
+    function clearTodos() {
+        setTodos([]);
+        setClearTodosToggled(false);
+    }
+
     return (
         <div>
             <div onClick={removeTodoTest} style={{cursor: 'pointer'}}>Reset</div>
+            <div className={styles.container}>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId='todos'>
                     {(provided) => (
-                        <div className={styles.container} {...provided.droppableProps} ref={provided.innerRef}>
+                        <div className={styles.todos} {...provided.droppableProps} ref={provided.innerRef}>
                                 {todos.map((todo, index) => (
                                     <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
                                         {(provided) => (
@@ -150,20 +168,37 @@ const TodosView = () => {
                                         )}
                                     </Draggable>
                                 ))}
-                                <input 
-                                    className={inputClasses}
-                                    ref={inputRef}
-                                    placeholder={inputPlaceholder}
-                                    type='text' 
-                                    value={todoText} 
-                                    onChange={e => setTodoText(e.target.value)}
-                                    onKeyDown={handleAddTodoInputKeyDown}
-                                />
+                                
                                 {provided.placeholder}
                         </div>
                     )}
                 </Droppable>
             </DragDropContext>
+            <input 
+                className={inputClasses}
+                ref={inputRef}
+                placeholder={inputPlaceholder}
+                type='text' 
+                value={todoText} 
+                onChange={e => setTodoText(e.target.value)}
+                onKeyDown={handleAddTodoInputKeyDown}
+            />
+            </div>
+            { doesAnyTodoExist() &&
+            <div className={styles.clearTodosSection}>
+                {clearTodosToggled ? 
+                <div className={styles.confirmClearSection}>
+                    <span className={styles.confirmClearText}>Are you sure?</span>
+                    <div>
+                        <button className={styles.confirmClearButton} onClick={clearTodos}>yes, clear my todos</button>
+                        <button className={styles.abortClearButton} onClick={() => setClearTodosToggled(false)}>no, keep my todos</button>
+                    </div>
+                </div>  
+                :
+                <button className={styles.clearButton} onClick={() => setClearTodosToggled(true)}>Clear Todos</button> 
+                }
+            </div>
+            }
         </div>
     )
 }
