@@ -72,10 +72,6 @@ const TodosView = () => {
         return highestId + 1;
     }
 
-    function removeTodoTest() {
-        setTodos([]);
-    }
-
     function handleAddTodoInputKeyDown(event) {
         if (event.key === "Enter") { 
             addTodo();
@@ -151,38 +147,39 @@ const TodosView = () => {
 
     return (
         <div>
-            <div onClick={removeTodoTest} style={{cursor: 'pointer'}}>Reset</div>
             <div className={styles.container}>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId='todos'>
-                    {(provided) => (
-                        <div className={styles.todos} {...provided.droppableProps} ref={provided.innerRef}>
-                                {todos.map((todo, index) => (
-                                    <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
-                                        {(provided) => (
-                                            <div className={styles.todo} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
-                                                {todoTextElement(todo)}
-                                                {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                
-                                {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-            <input 
-                className={inputClasses}
-                ref={inputRef}
-                placeholder={inputPlaceholder}
-                type='text' 
-                value={todoText} 
-                onChange={e => setTodoText(e.target.value)}
-                onKeyDown={handleAddTodoInputKeyDown}
-            />
+                <div>
+                    <DragDropContext onDragEnd={handleOnDragEnd}>
+                        <Droppable droppableId='todos'>
+                            {(provided) => (
+                                <div className={styles.todos} {...provided.droppableProps} ref={provided.innerRef}>
+                                        {todos.map((todo, index) => (
+                                            <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
+                                                {(provided) => (
+                                                    <div className={styles.todo} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                        <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
+                                                        {todoTextElement(todo)}
+                                                        {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        
+                                        {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    <input 
+                        className={inputClasses}
+                        ref={inputRef}
+                        placeholder={inputPlaceholder}
+                        type='text' 
+                        value={todoText} 
+                        onChange={e => setTodoText(e.target.value)}
+                        onKeyDown={handleAddTodoInputKeyDown}
+                    />
+                    </DragDropContext>
+                </div>
             </div>
             { doesAnyTodoExist() &&
             <div className={styles.clearTodosSection}>
