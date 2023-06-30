@@ -1,23 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as todoStorage from './storage/todoStorageHandler'
 import styles from './TodosView.module.css'
-import Checkbox from './input/Checkbox';
-import Trashcan from './input/Trashcan';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import Todo from './Todo';
+import ClearTodosBox from './input/ClearTodosBox';
 
 const TodosView = () => {
     const [todos, setTodos] = useState(
         todoStorage.getTodos() || []
     )
-
     const [todoText, setTodoText] = useState("");
-    const [editingTodoId, setEditingTodoId] = useState(null);
-    const [editingTodoText, setEditingTodoText] = useState("");
-
     const [inputPlaceholder, setInputPlaceholder] = useState("");
     const inputRef = useRef();
-
-    const [clearTodosToggled, setClearTodosToggled] = useState(false);
 
     useEffect(() => {
         todoStorage.setTodos(todos);
@@ -52,7 +46,7 @@ const TodosView = () => {
         )
     }
 
-    function doesAnyTodoExist() {
+    function doAnyTodosExist() {
         return todos.length > 0;
     }
 
@@ -78,54 +72,17 @@ const TodosView = () => {
         }
     }
 
-    const isTodosEmpty = () => todos.length === 0;
+    const inputClasses = !doAnyTodosExist() ? `${styles.inputField} ${styles.inputFieldFirstTodo}` : styles.inputField;
 
-    const inputClasses = isTodosEmpty() ? `${styles.inputField} ${styles.inputFieldFirstTodo}` : styles.inputField;
-
-    function editTodo() {
-        if (editingTodoText.trim() === '') {
-            removeTodo(editingTodoId)
+    function editTodo(todoId, text) {
+        if (text.trim() === '') {
+            removeTodo(todoId)
         }
         else {
             setTodos(
-                todos.map(todo => todo.id === editingTodoId ? { ...todo, text: editingTodoText } : todo)
+                todos.map(todo => todo.id === todoId ? { ...todo, text: text } : todo)
             );
         }
-
-        setEditingTodoId(null);
-        setEditingTodoText("");
-    }
-
-    function handleEditTodoKeyDown(event) {
-        if (event.key === "Enter") {
-            editTodo();   
-        }
-    }
-
-    function todoTextElement(todo) {
-        if (todo.id === editingTodoId && !todo.completed) {
-            return <input 
-                    type='text'
-                    className={styles.editInput}
-                    value={editingTodoText}
-                    onChange={e => setEditingTodoText(e.target.value)}
-                    onKeyDown={handleEditTodoKeyDown}
-                    onBlur={editTodo}
-                    autoFocus
-                    />
-        }
-
-        const classes = todo.completed ? `${styles.todoText} ${styles.strikethrough}` : styles.todoText;
-        return <span className={classes} onClick={() => setEditingTodo(todo)}>{todo.text}</span>
-    }
-
-    function setEditingTodo(todo) {
-        setEditingTodoId(todo.id);
-        setEditingTodoText(todo.text);
-    }
-
-    function trashcanStyles(todo) {
-        return todo.completed ? `${styles.trashcan} ${styles.shownTrashcan}` : styles.trashcan
     }
 
     function handleOnDragEnd(result) {
@@ -142,7 +99,6 @@ const TodosView = () => {
 
     function clearTodos() {
         setTodos([]);
-        setClearTodosToggled(false);
     }
 
     return (
@@ -154,15 +110,14 @@ const TodosView = () => {
                             {(provided) => (
                                 <div className={styles.todos} {...provided.droppableProps} ref={provided.innerRef}>
                                         {todos.map((todo, index) => (
-                                            <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
-                                                {(provided) => (
-                                                    <div className={styles.todo} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                        <Checkbox id={todo.id.toString()} checked={todo.completed} onChange={() => toggleCompleted(todo.id)} />
-                                                        {todoTextElement(todo)}
-                                                        {<Trashcan customStyles={trashcanStyles(todo)} onClick={() => removeTodo(todo.id)} />}
-                                                    </div>
-                                                )}
-                                            </Draggable>
+                                            <Todo
+                                                key={todo.id}
+                                                todo={todo}
+                                                index={index}
+                                                onCheckboxToggle={() => toggleCompleted(todo.id)}
+                                                editTodo={editTodo}
+                                                removeTodo={() => removeTodo(todo.id)}
+                                            />
                                         ))}
                                         
                                         {provided.placeholder}
@@ -181,21 +136,7 @@ const TodosView = () => {
                     </DragDropContext>
                 </div>
             </div>
-            { doesAnyTodoExist() &&
-            <div className={styles.clearTodosSection}>
-                {clearTodosToggled ? 
-                <div className={styles.confirmClearSection}>
-                    <span className={styles.confirmClearText}>Are you sure?</span>
-                    <div>
-                        <button className={styles.confirmClearButton} onClick={clearTodos}>yes, clear my todos</button>
-                        <button className={styles.abortClearButton} onClick={() => setClearTodosToggled(false)}>no, keep my todos</button>
-                    </div>
-                </div>  
-                :
-                <button className={styles.clearButton} onClick={() => setClearTodosToggled(true)}>Clear Todos</button> 
-                }
-            </div>
-            }
+            { doAnyTodosExist() && <ClearTodosBox clearTodos={clearTodos} />}
         </div>
     )
 }

@@ -1,0 +1,63 @@
+.clearTodosSection {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+}
+
+.clearButton {
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    background-color: rgb(172, 47, 47);
+    border-radius: 15px;
+    color: white;
+    padding: 0.5em 1em;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.clearButton:hover {
+    background-color: red;
+}
+
+.confirmClearSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.confirmClearText {
+    cursor: default;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.confirmClearButton {
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: rgb(172, 47, 47);
+    border-radius: 15px;
+    padding: 0.5em 0.75em;
+    color: white;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.abortClearButton {
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #727272;
+    border-radius: 15px;
+    padding: 0.5em 0.75em;
+    color: white;
+    margin-left: 10px;
+    transition: background-color 0.25s ease-in-out;
+}
+
+.confirmClearButton:hover {
+    background-color: red;
+}
+
+.abortClearButton:hover {
+    background-color: #3e3d3d;
+}
