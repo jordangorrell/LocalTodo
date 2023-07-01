@@ -15,6 +15,18 @@
     transition: background-color 0.25s ease-in-out;
 }
 
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .clearButton:hover {
     background-color: red;
 }
@@ -22,6 +34,10 @@
 .confirmClearSection {
     display: flex;
     flex-direction: column;
+    background-color: white;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .confirmClearText {
@@ -36,7 +52,7 @@
     cursor: pointer;
     font-size: 16px;
     background-color: rgb(172, 47, 47);
-    border-radius: 15px;
+    border-radius: 5px;
     padding: 0.5em 0.75em;
     color: white;
     transition: background-color 0.25s ease-in-out;
@@ -47,7 +63,7 @@
     cursor: pointer;
     font-size: 16px;
     background-color: #727272;
-    border-radius: 15px;
+    border-radius: 5px;
     padding: 0.5em 0.75em;
     color: white;
     margin-left: 10px;
@@ -60,4 +76,22 @@
 
 .abortClearButton:hover {
     background-color: #3e3d3d;
+}
+
+.confirmClearText,
+.confirmClearButton,
+.abortClearButton,
+.clearButton {
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .clearButton {
+        font-size: 14px;
+    }
+
+    .abortClearButton,
+    .confirmClearButton {
+        font-size: 14px;
+    }
 }
