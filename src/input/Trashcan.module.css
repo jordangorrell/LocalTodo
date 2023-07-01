@@ -27,3 +27,10 @@
 .buttonWrapper:hover .trashcan .piece {
     fill: red;
 }
+
+@media (max-width: 768px) {
+    .trashcan {
+        height: 15px;
+        width: 15px;
+    }
+}

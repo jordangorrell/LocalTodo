@@ -9,7 +9,7 @@
 
 .editInput {
     font-family: 'Nunito Sans';
-    font-size: 16px;
+    font-size: 1em;
     border: none;
     border-bottom: 2px solid #939393;
     outline: none; /* Remove outline on focus */
@@ -19,6 +19,7 @@
 }
 
 .todoText {
+    font-size: 1em;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
     margin-left: 10px;
 }
@@ -55,5 +56,11 @@
 @keyframes trashcanShow {
     100% {
         opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .todoText {
+        font-size: 0.75em;
     }
 }

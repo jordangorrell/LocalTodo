@@ -51,6 +51,13 @@ input:not(:checked) ~ .svg {
     animation-iteration-count: 1;
 }
 
+@media (max-width: 768px) {
+    .svg {
+        width: 19.75px;
+        height: 19.75px;
+    }
+}
+
 @keyframes checkedAnimation2 {
     25% {
         transform: scale(0.5);
